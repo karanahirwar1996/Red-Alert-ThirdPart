@@ -22,7 +22,13 @@ jobs:
           python-version: 3.x  # Change this to your desired Python version
 
       - name: Install dependencies
-        run: pip install pandas gspread oauth2client beautifulsoup4 pip install nltk
+        run: pip install pandas gspread oauth2client beautifulsoup4 nltk
 
       - name: Run Python code
-        run: python Red-Alert-ThirdPart.py
+        run: |
+          # Add a conditional check to skip running the code if emaillist.csv is modified
+          if [[ $(git diff --name-only HEAD^ HEAD | grep -c 'emaillist.csv') -eq 0 ]]; then
+            python Red-Alert-ThirdPart.py
+          else
+            echo "Skipping code execution because emaillist.csv was modified"
+          fi
